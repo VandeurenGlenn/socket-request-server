@@ -1,0 +1,27 @@
+{
+  "name": "socket-request-server",
+  "version": "0.2.0",
+  "description": "Simple WebSocket request/response server",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vandeurenglenn/socket-request-server.git"
+  },
+  "keywords": [
+    "socket",
+    "request",
+    "server"
+  ],
+  "author": "Glenn Vandeuren <vandeurenglenn@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/vandeurenglenn/socket-request-server/issues"
+  },
+  "homepage": "https://github.com/vandeurenglenn/socket-request-server#readme",
+  "dependencies": {
+    "websocket": "^1.0.26"
+  }
+}
