@@ -43,11 +43,12 @@ const socketRequestServer = ({httpServer, port}, routes) => {
           case 'binary':
             data = message.binaryData.toString();
             break;
-          default:
-
+          case 'utf8':
+            data = message.utf8Data;
+            break;
         }
       }
-      const { route, params, url } = JSON.parse(data.toString());
+      const { route, params, url } = JSON.parse(data);
       if (routes[url]) routes[url](params, response(connection, url));
       else return `nothing found for ${message.url}`;
     }
@@ -56,9 +57,7 @@ const socketRequestServer = ({httpServer, port}, routes) => {
 	});
 
   return {
-    close: () => {
-      socketServer.shutDown()
-    },
+    close: () => socketServer.shutDown(),
     connections: () => connections
   };
 };
