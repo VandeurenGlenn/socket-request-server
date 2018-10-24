@@ -4,7 +4,8 @@
   "description": "Simple WebSocket request/response server",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "rollup -c"
   },
   "repository": {
     "type": "git",
@@ -23,5 +24,8 @@
   "homepage": "https://github.com/vandeurenglenn/socket-request-server#readme",
   "dependencies": {
     "websocket": "^1.0.26"
+  },
+  "devDependencies": {
+    "rollup": "^0.66.6"
   }
 }
