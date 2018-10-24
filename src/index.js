@@ -2,7 +2,13 @@ import { server as WebSocketServer } from 'websocket';
 import socketConnection from './socket-connection.js';
 import response from './socket-response.js';
 
-const socketRequestServer = ({httpServer, port}, routes) => {
+const socketRequestServer = (options, routes) => {
+  if (!routes && !routes.port && options) routes = options;
+  else return console.error('no routes defined');
+
+  let {httpServer, port, protocol} = options;
+  if (!port) port = 6000;
+  if (!protocol) protocol = 'echo-protocol';
   if (!httpServer) {
     const { createServer } = require('http');
     httpServer = createServer();
@@ -33,7 +39,7 @@ const socketRequestServer = ({httpServer, port}, routes) => {
   		return;
   	}
 
-    connection = socketConnection(request);
+    connection = socketConnection(request, protocol);
     connections.push(connection);
 
     const routeHandler = message => {
