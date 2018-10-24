@@ -1,7 +1,7 @@
-/* socket-request-server version 0.4.0 */
+/* socket-request-server version 0.4.1 */
 'use strict';
 
-const ENVIRONMENT = {version: '0.4.0', production: true};
+const ENVIRONMENT = {version: '0.4.1', production: true};
 
 var websocket = require('websocket');
 
@@ -37,7 +37,7 @@ var response = (connection, url) => {
 
 const socketRequestServer = (options, routes) => {
   if (!routes && !routes.port && options) routes = options;
-  else return console.error('no routes defined');
+  else if (!options && !routes) return console.error('no routes defined');
 
   let {httpServer, port, protocol} = options;
   if (!port) port = 6000;
