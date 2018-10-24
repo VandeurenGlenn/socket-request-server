@@ -1,7 +1,7 @@
-/* socket-request-server version 0.2.0 */
+/* socket-request-server version 0.4.0 */
 'use strict';
 
-const ENVIRONMENT = {version: '0.2.0', production: true};
+const ENVIRONMENT = {version: '0.4.0', production: true};
 
 var websocket = require('websocket');
 
@@ -11,12 +11,12 @@ var websocket = require('websocket');
  * @param {object} connection socket connection
  * @param {string} route the route to handle
  */
-var socketConnection = request => {
+var socketConnection = (request, protocol) => {
   // console.log(request);
-  const connection = request.accept('echo-protocol', request.origin);
-  console.log((new Date()) + ' Connection accepted.');
+  const connection = request.accept(protocol, request.origin);
+  console.log(`${new Date()}: Connection accepted @${protocol}`);
   return connection;
-}
+};
 
 /**
  * @module socketResponse
@@ -33,9 +33,15 @@ var response = (connection, url) => {
     send,
     error
   }
-}
+};
 
-const socketRequestServer = ({httpServer, port}, routes) => {
+const socketRequestServer = (options, routes) => {
+  if (!routes && !routes.port && options) routes = options;
+  else return console.error('no routes defined');
+
+  let {httpServer, port, protocol} = options;
+  if (!port) port = 6000;
+  if (!protocol) protocol = 'echo-protocol';
   if (!httpServer) {
     const { createServer } = require('http');
     httpServer = createServer();
@@ -59,14 +65,9 @@ const socketRequestServer = ({httpServer, port}, routes) => {
   let connection;
 
 	socketServer.on('request', request => {
-  	if (!originIsAllowed(request.origin)) {
-  		// Make sure we only accept requests from an allowed origin
-  		request.reject();
-  		console.log((new Date()) + ' Connection from origin ' + request.origin + ' rejected.');
-  		return;
-  	}
+  	if (!originIsAllowed(request.origin)) ;
 
-    connection = socketConnection(request);
+    connection = socketConnection(request, protocol);
     connections.push(connection);
 
     const routeHandler = message => {
