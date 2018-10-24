@@ -4,7 +4,7 @@ import response from './socket-response.js';
 
 const socketRequestServer = (options, routes) => {
   if (!routes && !routes.port && options) routes = options;
-  else return console.error('no routes defined');
+  else if (!options && !routes) return console.error('no routes defined');
 
   let {httpServer, port, protocol} = options;
   if (!port) port = 6000;
