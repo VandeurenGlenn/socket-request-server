@@ -1,7 +1,7 @@
-/* socket-request-server version 0.4.1 */
+/* socket-request-server version 0.4.2 */
 'use strict';
 
-const ENVIRONMENT = {version: '0.4.1', production: true};
+const ENVIRONMENT = {version: '0.4.2', production: true};
 
 var websocket = require('websocket');
 
@@ -24,9 +24,9 @@ var socketConnection = (request, protocol) => {
  * @param {object} connection socket connection
  * @param {string} url the request url
  */
-var response = (connection, url) => {
+var response = (connection, url, id) => {
   const send = (data = 'ok', status = 200) => connection.send(
-    JSON.stringify({url, status, value: data})
+    JSON.stringify({url, status, value: data, id})
   );
   const error = data => connection.send(JSON.stringify({url, value: data}));
   return {
@@ -82,8 +82,8 @@ const socketRequestServer = (options, routes) => {
             break;
         }
       }
-      const { route, params, url } = JSON.parse(data);
-      if (routes[url]) routes[url](params, response(connection, url));
+      const { route, params, url, id } = JSON.parse(data);
+      if (routes[url]) routes[url](params, response(connection, url, id));
       else return `nothing found for ${message.url}`;
     };
 
