@@ -54,8 +54,8 @@ const socketRequestServer = (options, routes) => {
             break;
         }
       }
-      const { route, params, url } = JSON.parse(data);
-      if (routes[url]) routes[url](params, response(connection, url));
+      const { route, params, url, id } = JSON.parse(data);
+      if (routes[url]) routes[url](params, response(connection, url, id));
       else return `nothing found for ${message.url}`;
     }
 
