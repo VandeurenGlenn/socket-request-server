@@ -6,12 +6,13 @@ const socketRequestServer = (options, routes) => {
   if (!routes && !routes.port && options) routes = options;
   else if (!options && !routes) return console.error('no routes defined');
 
-  let {httpServer, port, protocol} = options;
+  let {httpServer, httpsServer, port, protocol, credentials} = options;
   if (!port) port = 6000;
   if (!protocol) protocol = 'echo-protocol';
-  if (!httpServer) {
-    const { createServer } = require('http');
-    httpServer = createServer();
+  if (!httpServer && !httpsServer) {
+    const { createServer } = credentials ? require('https') : require('http');
+    if (credentials) httpServer = createServer(credentials);
+    else httpServer = createServer();
 
     httpServer.listen(port, () => {
       console.log(`listening on ${port}`);
