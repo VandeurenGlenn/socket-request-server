@@ -1,6 +1,6 @@
 {
   "name": "socket-request-server",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "description": "Simple WebSocket request/response server",
   "main": "index.js",
   "scripts": {
@@ -23,7 +23,7 @@
   },
   "homepage": "https://github.com/vandeurenglenn/socket-request-server#readme",
   "dependencies": {
-    "websocket": "^1.0.28"
+    "websocket": "^1.0.30"
   },
   "devDependencies": {
     "rollup": "^0.66.6"
