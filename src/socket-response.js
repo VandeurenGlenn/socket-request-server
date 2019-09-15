@@ -10,6 +10,7 @@ export default (connection, url, id) => {
   )
   const error = data => connection.send(JSON.stringify({url, value: data}))
   return {
+    connection,
     send,
     error
   }
