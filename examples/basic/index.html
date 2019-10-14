@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+  </head>
+  <body>
+    <script>
+      const socket = new WebSocket('ws://127.0.0.1:6060')
+      
+      socket.onmessage = ({data}) => {
+        const h = document.createElement('h4')
+        h.innerHTML = data.toString()
+        document.body.appendChild(h)
+      }
+      socket.onopen = () => {
+        socket.send(JSON.stringify({ url: 'date'}))
+      }
+    </script>
+  </body>
+</html>
