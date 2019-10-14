@@ -6,9 +6,9 @@ const socketRequestServer = (options, routes) => {
   if (!routes && !routes.port && options) routes = options;
   else if (!options && !routes) return console.error('no routes defined');
 
-  let {httpServer, httpsServer, port, protocol, credentials} = options;
+  let {httpServer, httpsServer, port, protocol, credentials, origin} = options;
   if (!port) port = 6000;
-  if (!protocol) protocol = 'echo-protocol';
+  // if (!protocol) protocol = 'echo-protocol';
   if (!httpServer && !httpsServer) {
     const { createServer } = credentials ? require('https') : require('http');
     if (credentials) httpServer = createServer(credentials);
@@ -24,23 +24,14 @@ const socketRequestServer = (options, routes) => {
   	autoAcceptConnections: false
 	});
 
-	const originIsAllowed = origin => {
-  	// put logic here to detect whether the specified origin is allowed.
-  	return true;
-	};
+	
 
   const connections = [];
   let connection;
 
 	socketServer.on('request', request => {
-  	if (!originIsAllowed(request.origin)) {
-  		// Make sure we only accept requests from an allowed origin
-  		request.reject();
-  		console.log((new Date()) + ' Connection from origin ' + request.origin + ' rejected.');
-  		return;
-  	}
 
-    connection = socketConnection(request, protocol);
+    connection = socketConnection(request, protocol, origin);
     connections.push(connection);
 
     const routeHandler = message => {
@@ -55,8 +46,13 @@ const socketRequestServer = (options, routes) => {
             break;
         }
       }
-      const { route, params, url, id } = JSON.parse(data);
-      if (routes[url]) routes[url](params, response(connection, url, id));
+      const { route, params, url, id, customEvent } = JSON.parse(data);
+      // ignore api when customEvent is defined
+      if (customEvent) return;
+      if (routes[url]) {
+        if (!params) return routes[url](response(connection, url, id));
+        return routes[url](params, response(connection, url, id));
+      }
       else return `nothing found for ${message.url}`;
     }
 
