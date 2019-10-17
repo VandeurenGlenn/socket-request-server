@@ -53,7 +53,7 @@ const socketRequestServer = (options, routes) => {
         if (!params) return routes[url](response(connection, url, id));
         return routes[url](params, response(connection, url, id));
       }
-      else return `nothing found for ${message.url}`;
+      else return response(connection, url, id).error(`nop handler found for '${message.url}'`);
     }
 
     connection.on('message', routeHandler);
