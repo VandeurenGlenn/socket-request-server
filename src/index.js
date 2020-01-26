@@ -1,13 +1,51 @@
 import { server as WebSocketServer } from 'websocket';
 import socketConnection from './socket-connection.js';
 import response from './socket-response.js';
+import PubSub from 'little-pubsub';
 
 const socketRequestServer = (options, routes) => {
   if (!routes && !routes.port && options) routes = options;
   else if (!options && !routes) return console.error('no routes defined');
 
-  let {httpServer, httpsServer, port, protocol, credentials, origin} = options;
+  let {httpServer, httpsServer, port, protocol, credentials, origin, pubsub } = options;
+  if (!pubsub) pubsub = new PubSub;
   if (!port) port = 6000;
+  const connections = [];
+  let connection;
+  const startTime = new Date().getTime();
+  // default routes
+  if (!routes.ping) routes.ping = (response) => response.send(new Date().getTime());
+    if (!routes.uptime) routes.uptime = (response) => {
+      const now = new Date().getTime();
+      response.send(now - startTime);
+    };
+    if (!routes.pubsub) {
+      routes.pubsub = (params, response) => {
+        if (!response) {
+          response = params;
+          params = {};
+        }
+        if (!params.topic) params.topic = 'pubsub';
+        if (params.subscribe) {
+          pubsub.subscribe(params.topic, message => {
+            response.connection.send(JSON.stringify({url: params.topic, status: 200, value: message}));
+          });
+          response.send('ok', 200);
+        } else if (params.unsubscribe) {
+          pubsub.unsubscribe(params.topic, message => {
+            response.connection.send(JSON.stringify({url: params.topic, status: 200, value: message}));
+          });
+          for (const connection of connections) {
+            if (connection !== response.connection) connection.send(JSON.stringify({url: params.topic, status: 200, value: params}));
+          }
+          response.send('ok', 200);
+        }
+        else
+          pubsub.publish(params.topic, params.value);
+          response.send('ok', 200);
+      };
+      
+    }
   // if (!protocol) protocol = 'echo-protocol';
   if (!httpServer && !httpsServer) {
     const { createServer } = credentials ? require('https') : require('http');
@@ -23,11 +61,6 @@ const socketRequestServer = (options, routes) => {
   	httpServer,
   	autoAcceptConnections: false
 	});
-
-	
-
-  const connections = [];
-  let connection;
 
 	socketServer.on('request', request => {
 
@@ -61,7 +94,7 @@ const socketRequestServer = (options, routes) => {
 
   return {
     close: () => socketServer.shutDown(),
-    connections: () => connections
+    connections
   };
 };
 export default socketRequestServer;
