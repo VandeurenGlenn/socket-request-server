@@ -1,7 +1,7 @@
 import { server as WebSocketServer } from 'websocket';
 import socketConnection from './socket-connection.js';
 import response from './socket-response.js';
-import PubSub from 'little-pubsub';
+import PubSub from '@vandeurenglenn/little-pubsub';
 
 const socketRequestServer = (options, routes) => {
   if (!routes && !routes.port && options) routes = options;
@@ -46,6 +46,22 @@ const socketRequestServer = (options, routes) => {
       };
       
     }
+    // if (!routes.peernet) {
+    //   routes.peernet = (params, response) => {
+    //     if (params.join) {
+    //       peerMap.set(params.peerId, params.address)
+    //       response.send([...peerMap.values()])
+    //       for (const connection of connections) {
+    //         response(connection, 'peernet', 'peernet').send({discovered: params.address})
+    //       }
+    //       return
+    //     }
+    //     if (!params.join) {
+    //       peerMap.delete(params.peerId)
+    //       return response.send()
+    //     }
+    //   }
+    // }
   // if (!protocol) protocol = 'echo-protocol';
   if (!httpServer && !httpsServer) {
     const { createServer } = credentials ? require('https') : require('http');

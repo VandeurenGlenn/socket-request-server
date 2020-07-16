@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Simple WebSocket request/response server",
   "main": "index.js",
+  "module": "src/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "rollup -c"
@@ -23,7 +24,7 @@
   },
   "homepage": "https://github.com/vandeurenglenn/socket-request-server#readme",
   "dependencies": {
-    "little-pubsub": "^1.0.2",
+    "@vandeurenglenn/little-pubsub": "^1.2.3",
     "websocket": "^1.0.31"
   },
   "devDependencies": {

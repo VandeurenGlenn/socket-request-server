@@ -1,3 +1,7 @@
 const m = require('./');
 
-const s = m({port: 4000, protocol: 'disco'}, {})
+const s = m({port: 4455, protocol: 'disco'}, {
+  chainHeight: (response) => {
+    response.send(150)
+  }
+})
