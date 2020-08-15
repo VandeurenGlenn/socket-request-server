@@ -1,6 +1,6 @@
 import { server as WebSocketServer } from 'websocket';
 import socketConnection from './socket-connection.js';
-import response from './socket-response.js';
+import socketResponse from './socket-response.js';
 import PubSub from '@vandeurenglenn/little-pubsub';
 
 const socketRequestServer = (options, routes) => {
@@ -46,22 +46,23 @@ const socketRequestServer = (options, routes) => {
       };
       
     }
-    // if (!routes.peernet) {
-    //   routes.peernet = (params, response) => {
-    //     if (params.join) {
-    //       peerMap.set(params.peerId, params.address)
-    //       response.send([...peerMap.values()])
-    //       for (const connection of connections) {
-    //         response(connection, 'peernet', 'peernet').send({discovered: params.address})
-    //       }
-    //       return
-    //     }
-    //     if (!params.join) {
-    //       peerMap.delete(params.peerId)
-    //       return response.send()
-    //     }
-    //   }
-    // }
+    globalThis.peerMap = new Map()
+    if (!routes.peernet) {
+      routes.peernet = (params, response) => {
+        if (params.join) {
+          peerMap.set(params.peerId, params.address)
+          response.send([...peerMap.values()])
+          for (const connection of connections) {
+            socketResponse(connection, 'peernet', 'peernet').send({discovered: params.address})
+          }
+          return
+        }
+        if (!params.join) {
+          peerMap.delete(params.peerId)
+          return response.send()
+        }
+      }
+    }
   // if (!protocol) protocol = 'echo-protocol';
   if (!httpServer && !httpsServer) {
     const { createServer } = credentials ? require('https') : require('http');
@@ -99,10 +100,10 @@ const socketRequestServer = (options, routes) => {
       // ignore api when customEvent is defined
       if (customEvent) return;
       if (routes[url]) {
-        if (!params) return routes[url](response(connection, url, id));
-        return routes[url](params, response(connection, url, id));
+        if (!params) return routes[url](socketResponse(connection, url, id));
+        return routes[url](params, socketResponse(connection, url, id));
       }
-      else return response(connection, url, id).error(`nop handler found for '${message.url}'`);
+      else return socketResponse(connection, url, id).error(`nop handler found for '${message.url}'`);
     }
 
     connection.on('message', routeHandler);
