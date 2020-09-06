@@ -40,7 +40,12 @@ const socketRequestServer = (options, routes = {}) => {
           }
           response.send('ok', 200);
         }
-        else
+        else        
+          for (const connection of connections) {
+            if (connection !== response.connection) connection.send(JSON.stringify({
+              url: params.topic, status: 200, value: params
+            }));
+          }
           pubsub.publish(params.topic, params.value);
           response.send('ok', 200);
       };
