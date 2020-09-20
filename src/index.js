@@ -8,7 +8,7 @@ const socketRequestServer = (options, routes = {}) => {
   // else if (!options && !routes) return console.error('no routes defined');
 
   let {httpServer, httpsServer, port, protocol, credentials, origin, pubsub } = options;
-  if (!pubsub) pubsub = new PubSub;
+  if (!pubsub) pubsub = new PubSub({verbose: false});
   if (!port) port = 6000;
   const connections = [];
   let connection;
@@ -22,31 +22,37 @@ const socketRequestServer = (options, routes = {}) => {
     if (!routes.pubsub) {
       routes.pubsub = (params, response) => {
         if (!response) {
-          response = params;
-          params = {};
+          response = params
+          params = {}
         }
+        
         if (!params.topic) params.topic = 'pubsub';
+                
+        const topic = params.topic
+        delete params.topic
+        
         if (params.subscribe) {
-          pubsub.subscribe(params.topic, message => {
-            response.connection.send(JSON.stringify({url: params.topic, status: 200, value: message}));
-          });
+          pubsub.subscribe(topic, message => {
+            response.connection.send(JSON.stringify({url: topic, status: 200, value: message}));
+          })
           response.send('ok', 200);
         } else if (params.unsubscribe) {
-          pubsub.unsubscribe(params.topic, message => {
-            response.connection.send(JSON.stringify({url: params.topic, status: 200, value: message}));
-          });
+          pubsub.unsubscribe(topic, message => {
+            response.connection.send(JSON.stringify({url: topic, status: 200, value: message}));
+          })
           for (const connection of connections) {
-            if (connection !== response.connection) connection.send(JSON.stringify({url: params.topic, status: 200, value: params}));
+            if (connection !== response.connection) connection.send(JSON.stringify({url: topic, status: 200, value: params}));
           }
           response.send('ok', 200);
         }
-        else        
-          for (const connection of connections) {
-            if (connection !== response.connection) connection.send(JSON.stringify({
-              url: params.topic, status: 200, value: params
-            }));
-          }
-          pubsub.publish(params.topic, params.value);
+        else if (params.value !== undefined)
+          // should only be send raw to stars
+          // for (const connection of connections) {
+            // if (connection !== response.connection) connection.send(JSON.stringify({
+              // url: topic, status: 200, value: params
+            // }));
+          // }
+          pubsub.publish(topic, params.value);
           response.send('ok', 200);
       };
       
@@ -58,7 +64,8 @@ const socketRequestServer = (options, routes = {}) => {
           peerMap.set(params.peerId, params.address)
           response.send([...peerMap.values()])
           for (const connection of connections) {
-            socketResponse(connection, 'peernet', 'peernet').send({discovered: params.address})
+            if (connection !== response.connection)
+              socketResponse(connection, 'peernet', 'peernet').send({discovered: params.address})
           }
           return
         }
