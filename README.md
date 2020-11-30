@@ -3,7 +3,7 @@
 
 ## INSTALL 
 ```sh
-npm i --save socket-request-client
+npm i --save socket-request-server
 ```
 ## usage
 
