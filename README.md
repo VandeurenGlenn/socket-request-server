@@ -1,6 +1,10 @@
 # socket-request-server
 > Simple WebSocket request/response server
 
+## INSTALL 
+```sh
+npm i --save socket-request-client
+```
 ## usage
 
 ## basic
