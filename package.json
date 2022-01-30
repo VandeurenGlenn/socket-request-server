@@ -24,7 +24,7 @@
   },
   "homepage": "https://github.com/vandeurenglenn/socket-request-server#readme",
   "dependencies": {
-    "@vandeurenglenn/little-pubsub": "^1.2.3",
+    "@vandeurenglenn/little-pubsub": "^1.3.1",
     "websocket": "^1.0.32"
   },
   "devDependencies": {
