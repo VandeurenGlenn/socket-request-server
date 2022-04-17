@@ -25,12 +25,12 @@ const socketRequestServer = (options, routes = {}) => {
           response = params
           params = {}
         }
-        
+
         if (!params.topic) params.topic = 'pubsub';
-                
+
         const topic = params.topic
         delete params.topic
-        
+
         if (params.subscribe) {
           pubsub.subscribe(topic, message => {
             response.connection.send(JSON.stringify({url: topic, status: 200, value: message}));
@@ -55,7 +55,7 @@ const socketRequestServer = (options, routes = {}) => {
           pubsub.publish(topic, params.value);
           response.send('ok', 200);
       };
-      
+
     }
     globalThis.peerMap = new Map()
     if (!routes.peernet) {
@@ -112,10 +112,10 @@ const socketRequestServer = (options, routes = {}) => {
       // ignore api when customEvent is defined
       if (customEvent) return;
       if (routes[url]) {
-        if (!params) return routes[url](socketResponse(connection, url, id));
-        return routes[url](params, socketResponse(connection, url, id));
+        if (!params) return routes[url](socketResponse(connection, url, id), connections);
+        return routes[url](params, socketResponse(connection, url, id), connections);
       }
-      else return socketResponse(connection, url, id).error(`nop handler found for '${message.url}'`);
+      else return socketResponse(connection, url, id).error(`no handler found for '${message.url}'`);
     }
 
     connection.on('message', routeHandler);

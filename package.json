@@ -28,6 +28,6 @@
     "websocket": "^1.0.34"
   },
   "devDependencies": {
-    "rollup": "^0.66.6"
+    "rollup": "^2.70.2"
   }
 }
