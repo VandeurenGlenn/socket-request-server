@@ -3,6 +3,9 @@ import socketConnection from './socket-connection.js';
 import socketResponse from './socket-response.js';
 import PubSub from '@vandeurenglenn/little-pubsub';
 
+if (!globalThis.PubSub) globalThis.PubSub = PubSub
+if (!globalThis.pubsub) globalThis.pubsub = new PubSub()
+
 const socketRequestServer = (options, routes = {}) => {
   // if (!routes && !routes.port && options) routes = options;
   // else if (!options && !routes) return console.error('no routes defined');
