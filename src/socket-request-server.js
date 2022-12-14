@@ -7,7 +7,13 @@ import api from './api.js';
 if (!globalThis.PubSub) globalThis.PubSub = PubSub
 if (!globalThis.pubsub) globalThis.pubsub = new PubSub()
 
-const socketRequestServer = (options, routes = {}) => {
+/**
+ * 
+ * @param {object} options {httpServer, httpsServer, port, protocol, credentials, origin, pubsub }
+ * @param {object} routes 
+ * @returns Promise<{ close: function, connections: array }
+ */
+const socketRequestServer = async (options, routes = {}) => {
   // if (!routes && !routes.port && options) routes = options;
   // else if (!options && !routes) return console.error('no routes defined');
 
@@ -22,7 +28,7 @@ const socketRequestServer = (options, routes = {}) => {
   
   // if (!protocol) protocol = 'echo-protocol';
   if (!httpServer && !httpsServer) {
-    const { createServer } = credentials ? require('https') : require('http');
+    const { createServer } = credentials ? await import('https') : await import('http');
     if (credentials) httpServer = createServer(credentials);
     else httpServer = createServer();
 
@@ -37,7 +43,6 @@ const socketRequestServer = (options, routes = {}) => {
 	});
 
 	socketServer.on('request', request => {
-
     connection = socketConnection(request, protocol, origin);
     connections.push(connection);
 
@@ -54,7 +59,7 @@ const socketRequestServer = (options, routes = {}) => {
         }
       }
       const { params, url, id, customEvent } = JSON.parse(data);
-      // ignore api when customEvent is defined
+      // ignore api(routes) when customEvent is defined
       if (customEvent) return;
       if (routes[url]) {
         if (!params) return routes[url](socketResponse(connection, url, id), connections);
@@ -62,10 +67,8 @@ const socketRequestServer = (options, routes = {}) => {
       }
       else return socketResponse(connection, url, id).error(`no handler found for '${message.url}'`);
     }
-
     connection.on('message', routeHandler);
-	});
-
+	})
   return {
     close: () => socketServer.shutDown(),
     connections
