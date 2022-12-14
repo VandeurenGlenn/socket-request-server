@@ -9,7 +9,7 @@ npm i --save socket-request-server
 
 ## basic
 ```js
-const server = require('socket-request-server');
+import server from 'socket-request-server'
 server({port: 6000}, {
   date: ({send}) => response.send(new Date())  
 });
@@ -17,8 +17,8 @@ server({port: 6000}, {
 
 ### Custom http server
 ```js
-const { server } = require('socket-request-server');
-const { createServer } = require('http'); // optional
+import { server } from 'socket-request-server'
+import { createServer } from 'http' // optional
 
 const httpServer = createServer(); // define your own http server
 server({httpServer, port: 6000}, {
@@ -37,7 +37,8 @@ server({httpServer, port: 6000}, {
 
 ### customEvent
 ```js
-const server = require('socket-request-server');
+import server from 'socket-request-server'
+
 server({port: 6000}, {
   // does nothing when a customEvent is detected
   ping: ({email, password}, response) => {
