@@ -1,4 +1,4 @@
-import {fullLog} from './utils'
+import {fullLog} from './utils.js'
 
 const originIsAllowed = (requestOrigin, origin) => {
   // put logic here to detect whether the specified origin is allowed.
