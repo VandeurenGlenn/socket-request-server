@@ -4,7 +4,9 @@
   "description": "Simple WebSocket request/response server",
   "type": "module",
   "exports": {
-    ".": "./src/socket-request-server.js"
+    ".": "./src/socket-request-server.js",
+    "./response": "./src/socket-response.js",
+    "./connection": "./src/socket-connection.js"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
