@@ -4,7 +4,7 @@ globalThis.peerMap = new Map()
 const defaultRoutes = {
   ping: response => response.send(new Date().getTime()),
   uptime: response => response.send(new Date().getTime() - startTime),
-  pubsub: (params, response) => {
+  pubsub: (params, response, connections) => {
     if (!response) {
       response = params
       params = {}
@@ -39,7 +39,7 @@ const defaultRoutes = {
       pubsub.publish(topic, params.value);
       response.send('ok', 200);  
   },
-  peernet: (params, response) => {
+  peernet: (params, response, connections) => {
     if (params.join) {
       peerMap.set(params.peerId, params.address)
       response.send([...peerMap.values()])
