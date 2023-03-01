@@ -1,6 +1,6 @@
 import { server as WebSocketServer } from 'websocket';
-import socketConnection from './socket-connection.js';
-import socketResponse from './socket-response.js';
+import socketConnection from './connection.js';
+import socketResponse from './response.js';
 import PubSub from '@vandeurenglenn/little-pubsub';
 import api from './api.js';
 
@@ -18,11 +18,10 @@ const socketRequestServer = async (options, routes = {}) => {
   // else if (!options && !routes) return console.error('no routes defined');
 
   let {httpServer, httpsServer, port, protocol, credentials, origin, pubsub } = options;
-  if (!pubsub) pubsub = new PubSub({verbose: false});
+  if (!pubsub) pubsub = new PubSub(false);
   if (!port) port = 6000;
   const connections = [];
   let connection;
-  const startTime = new Date().getTime();
   routes = api(routes)
   // default routes
   

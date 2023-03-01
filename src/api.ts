@@ -2,9 +2,9 @@ const startTime = new Date().getTime()
 globalThis.peerMap = new Map()
 
 const defaultRoutes = {
-  ping: response => response.send(new Date().getTime()),
-  uptime: response => response.send(new Date().getTime() - startTime),
-  pubsub: (params, response, connections) => {
+  ping: (response: { send: (arg0: number) => any }) => response.send(new Date().getTime()),
+  uptime: (response: { send: (arg0: number) => any }) => response.send(new Date().getTime() - startTime),
+  pubsub: (params: { topic?: any; subscribe?: any; unsubscribe?: any; value?: any }, response: { connection: { send: (arg0: string) => void }; send: (arg0: string, arg1: number) => void }, connections: any) => {
     if (!response) {
       response = params
       params = {}
@@ -16,12 +16,12 @@ const defaultRoutes = {
     delete params.topic
 
     if (params.subscribe) {
-      pubsub.subscribe(topic, message => {
+      pubsub.subscribe(topic, (message: any) => {
         response.connection.send(JSON.stringify({url: topic, status: 200, value: message}));
       })
       response.send('ok', 200);
     } else if (params.unsubscribe) {
-      pubsub.unsubscribe(topic, message => {
+      pubsub.unsubscribe(topic, (message: any) => {
         response.connection.send(JSON.stringify({url: topic, status: 200, value: message}));
       })
       for (const connection of connections) {
@@ -39,7 +39,7 @@ const defaultRoutes = {
       pubsub.publish(topic, params.value);
       response.send('ok', 200);  
   },
-  peernet: (params, response, connections) => {
+  peernet: (params: { join: any; peerId: any; address: any }, response: { send: (arg0: any[]) => void; connection: any }, connections: any) => {
     if (params.join) {
       peerMap.set(params.peerId, params.address)
       response.send([...peerMap.values()])
@@ -56,6 +56,6 @@ const defaultRoutes = {
   }
 }
 
-export default (routes) => {
+export default (routes: any) => {
   return { ...defaultRoutes, ...routes }
 }

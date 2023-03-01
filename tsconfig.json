@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "NodeNext",
+    "outDir": "./exports",
+    "moduleResolution":"NodeNext",
+    "allowJs": true,
+    "declarationDir": "./exports/types",
+    "declaration": true
+  },
+  "include": [
+    "./src/**/*"
+  ]
+}
