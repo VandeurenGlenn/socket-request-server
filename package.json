@@ -1,6 +1,6 @@
 {
   "name": "socket-request-server",
-  "version": "1.6.5",
+  "version": "1.6.6",
   "description": "Simple WebSocket request/response server",
   "type": "module",
   "exports": {
