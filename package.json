@@ -4,7 +4,10 @@
   "description": "Simple WebSocket request/response server",
   "type": "module",
   "exports": {
-    ".": "./exports/server.js",
+    ".": {
+      "import": "./exports/server.js",
+      "types": "./exports/types/server.d.ts"
+    },
     "./response": "./exports/response.js",
     "./connection": "./exports/connection.js"
   },

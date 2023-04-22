@@ -1,3 +1,4 @@
+import socketResponse from './response.js'
 const startTime = new Date().getTime()
 globalThis.peerMap = new Map()
 
@@ -16,12 +17,12 @@ const defaultRoutes = {
     delete params.topic
 
     if (params.subscribe) {
-      pubsub.subscribe(topic, (message: any) => {
+      globalThis.pubsub.subscribe(topic, (message: any) => {
         response.connection.send(JSON.stringify({url: topic, status: 200, value: message}));
       })
       response.send('ok', 200);
     } else if (params.unsubscribe) {
-      pubsub.unsubscribe(topic, (message: any) => {
+      globalThis.pubsub.unsubscribe(topic, (message: any) => {
         response.connection.send(JSON.stringify({url: topic, status: 200, value: message}));
       })
       for (const connection of connections) {
@@ -36,13 +37,13 @@ const defaultRoutes = {
           // url: topic, status: 200, value: params
         // }));
       // }
-      pubsub.publish(topic, params.value);
+      globalThis.pubsub.publish(topic, params.value);
       response.send('ok', 200);  
   },
   peernet: (params: { join: any; peerId: any; address: any }, response: { send: (arg0: any[]) => void; connection: any }, connections: any) => {
     if (params.join) {
-      peerMap.set(params.peerId, params.address)
-      response.send([...peerMap.values()])
+      globalThis.peerMap.set(params.peerId, params.address)
+      response.send([...globalThis.peerMap.values()])
       for (const connection of connections) {
         if (connection !== response.connection)
           socketResponse(connection, 'peernet', 'peernet').send({discovered: params.address})
@@ -50,8 +51,8 @@ const defaultRoutes = {
       return
     }
     if (!params.join) {
-      peerMap.delete(params.peerId)
-      return response.send()
+      globalThis.peerMap.delete(params.peerId)
+      return
     }
   }
 }

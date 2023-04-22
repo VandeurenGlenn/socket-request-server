@@ -1,6 +1,6 @@
 import { server } from 'websocket';
 import socketConnection from './connection.js';
-import socketResponse$1 from './response.js';
+import socketResponse from './response.js';
 import PubSub from '@vandeurenglenn/little-pubsub';
 
 const startTime = new Date().getTime();
@@ -18,13 +18,13 @@ const defaultRoutes = {
         const topic = params.topic;
         delete params.topic;
         if (params.subscribe) {
-            pubsub.subscribe(topic, (message) => {
+            globalThis.pubsub.subscribe(topic, (message) => {
                 response.connection.send(JSON.stringify({ url: topic, status: 200, value: message }));
             });
             response.send('ok', 200);
         }
         else if (params.unsubscribe) {
-            pubsub.unsubscribe(topic, (message) => {
+            globalThis.pubsub.unsubscribe(topic, (message) => {
                 response.connection.send(JSON.stringify({ url: topic, status: 200, value: message }));
             });
             for (const connection of connections) {
@@ -40,13 +40,13 @@ const defaultRoutes = {
             // url: topic, status: 200, value: params
             // }));
             // }
-            pubsub.publish(topic, params.value);
+            globalThis.pubsub.publish(topic, params.value);
         response.send('ok', 200);
     },
     peernet: (params, response, connections) => {
         if (params.join) {
-            peerMap.set(params.peerId, params.address);
-            response.send([...peerMap.values()]);
+            globalThis.peerMap.set(params.peerId, params.address);
+            response.send([...globalThis.peerMap.values()]);
             for (const connection of connections) {
                 if (connection !== response.connection)
                     socketResponse(connection, 'peernet', 'peernet').send({ discovered: params.address });
@@ -54,8 +54,8 @@ const defaultRoutes = {
             return;
         }
         if (!params.join) {
-            peerMap.delete(params.peerId);
-            return response.send();
+            globalThis.peerMap.delete(params.peerId);
+            return;
         }
     }
 };
@@ -121,11 +121,11 @@ const socketRequestServer = async (options, routes = {}) => {
                 return;
             if (routes[url]) {
                 if (!params)
-                    return routes[url](socketResponse$1(connection, url, id), connections);
-                return routes[url](params, socketResponse$1(connection, url, id), connections);
+                    return routes[url](socketResponse(connection, url, id), connections);
+                return routes[url](params, socketResponse(connection, url, id), connections);
             }
             else
-                return socketResponse$1(connection, url, id).error(`no handler found for '${message.url}'`);
+                return socketResponse(connection, url, id).error(`no handler found for '${message.url}'`);
         };
         connection.on('message', routeHandler);
     });

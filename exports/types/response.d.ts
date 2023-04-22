@@ -6,7 +6,7 @@
  */
 declare const _default: (connection: any, url: string, id: string, customEvent?: any) => {
     connection: any;
-    send: (data?: string, status?: number) => Promise<void>;
+    send: (data?: any, status?: number) => Promise<void>;
     error: (data: any) => Promise<void>;
 };
 export default _default;

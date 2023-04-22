@@ -1,5 +1,5 @@
 const fullLog = text => {
-    return console.log(`${new Date()}: ${text}`);
+  return console.log(`${new Date()}: ${text}`)
 };
 
 const originIsAllowed = (requestOrigin, origin) => {
