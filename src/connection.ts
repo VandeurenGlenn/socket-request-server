@@ -1,10 +1,10 @@
-import {fullLog} from './utils.js'
+import { fullLog } from './utils.js'
 
 const originIsAllowed = (requestOrigin, origin) => {
   // put logic here to detect whether the specified origin is allowed.
-  if (origin && requestOrigin !== origin) return false;
-  return true;
-};
+  if (origin && requestOrigin !== origin) return false
+  return true
+}
 
 /**
  * @module socketResponse
@@ -12,15 +12,18 @@ const originIsAllowed = (requestOrigin, origin) => {
  * @param {object} connection socket connection
  * @param {string} route the route to handle
  */
-export default (request, protocol, origin) => {  
-	if (origin && !originIsAllowed(request.origin, origin)) {
-		// Make sure we only accept requests from an allowed origin
-		request.reject();
+export default (request, protocol, origin) => {
+  if (origin && !originIsAllowed(request.origin, origin)) {
+    // Make sure we only accept requests from an allowed origin
+    request.reject()
     fullLog(`Connection from origin ${request.origin} rejected.`)
-		return;
-	}
+    return
+  }
   // console.log(request);
-  const connection = request.accept(protocol, request.origin);
+  const connection = request.accept(protocol, request.origin)
   fullLog(`Connection accepted @${protocol}`)
-  return connection;
+  connection.publish = (topic, value) => {
+    connection.send(JSON.stringify({ url: topic, status: 200, value }))
+  }
+  return connection
 }

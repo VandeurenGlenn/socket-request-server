@@ -31,8 +31,7 @@
   },
   "homepage": "https://github.com/vandeurenglenn/socket-request-server#readme",
   "dependencies": {
-    "@vandeurenglenn/little-pubsub": "^1.4.0",
-    "websocket": "^1.0.34"
+    "@vandeurenglenn/little-pubsub": "^1.4.0"
   },
   "devDependencies": {
     "@rollup/plugin-typescript": "^11.0.0",
