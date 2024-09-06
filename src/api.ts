@@ -23,14 +23,20 @@ const defaultRoutes = {
     const topic = params.topic
     delete params.topic
 
+    const send = (message: any) => {
+      response.connection.send(JSON.stringify({ url: topic, status: 200, value: message }))
+    }
+
     if (params.subscribe) {
       globalThis.pubsub.subscribe(topic, (message: any) => {
-        response.connection.send(JSON.stringify({ url: topic, status: 200, value: message }))
+        send(message)
       })
+      // send the current value, following the little-pubsub protocol
+      if (globalThis.pubsub.subscribers?.[topic]) send(globalThis.pubsub.subscribers[topic].value)
       response.send('ok', 200)
     } else if (params.unsubscribe) {
       globalThis.pubsub.unsubscribe(topic, (message: any) => {
-        response.connection.send(JSON.stringify({ url: topic, status: 200, value: message }))
+        send(message)
       })
       for (const connection of connections) {
         if (connection !== response.connection)
