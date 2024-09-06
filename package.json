@@ -15,6 +15,9 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "rollup -c"
   },
+  "files": [
+    "exports"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/vandeurenglenn/socket-request-server.git"
