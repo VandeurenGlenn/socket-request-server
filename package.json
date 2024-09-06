@@ -31,11 +31,11 @@
   },
   "homepage": "https://github.com/vandeurenglenn/socket-request-server#readme",
   "dependencies": {
-    "@vandeurenglenn/little-pubsub": "^1.4.0"
+    "@vandeurenglenn/little-pubsub": "^1.4.9"
   },
   "devDependencies": {
-    "@rollup/plugin-typescript": "^11.0.0",
-    "rollup": "^3.17.3",
-    "tslib": "^2.5.0"
+    "@rollup/plugin-typescript": "^11.1.6",
+    "rollup": "^4.21.2",
+    "tslib": "^2.7.0"
   }
 }
