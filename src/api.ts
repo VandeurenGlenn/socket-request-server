@@ -2,19 +2,21 @@ import socketResponse from './response.js'
 const startTime = new Date().getTime()
 globalThis.peerMap = new Map()
 
+export type SocketResponse = {
+  connection: { send: (arg0: string) => void }
+  send: (arg0: string, arg1: number) => void
+}
+
 const defaultRoutes = {
   ping: (response: { send: (arg0: number) => any }) => response.send(new Date().getTime()),
   uptime: (response: { send: (arg0: number) => any }) => response.send(new Date().getTime() - startTime),
   pubsub: (
     params: { topic?: any; subscribe?: any; unsubscribe?: any; value?: any },
-    response: {
-      connection: { send: (arg0: string) => void }
-      send: (arg0: string, arg1: number) => void
-    },
+    response: SocketResponse,
     connections: any
   ) => {
     if (!response) {
-      response = params
+      response = params as SocketResponse
       params = {}
     }
 

@@ -44,6 +44,7 @@
   },
   "devDependencies": {
     "@rollup/plugin-typescript": "^11.1.6",
+    "@types/websocket": "^1.0.10",
     "rollup": "^4.21.2",
     "tslib": "^2.7.0"
   }
