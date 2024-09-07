@@ -8,8 +8,14 @@
       "import": "./exports/server.js",
       "types": "./exports/types/server.d.ts"
     },
-    "./response": "./exports/response.js",
-    "./connection": "./exports/connection.js"
+    "./response": {
+      "import": "./exports/response.js",
+      "types": "./exports/types/response.d.ts"
+    },
+    "./connection": {
+      "import": "./exports/connection.js",
+      "types": "./exports/types/connection.d.ts"
+    }
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
