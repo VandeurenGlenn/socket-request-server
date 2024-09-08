@@ -33,8 +33,6 @@ const defaultRoutes = {
       globalThis.pubsub.subscribe(topic, (message: any) => {
         send(message)
       })
-      // send the current value, following the little-pubsub protocol
-      if (globalThis.pubsub.subscribers?.[topic]) send(globalThis.pubsub.subscribers[topic].value)
       response.send('ok', 200)
     } else if (params.unsubscribe) {
       globalThis.pubsub.unsubscribe(topic, (message: any) => {
@@ -45,7 +43,7 @@ const defaultRoutes = {
           connection.send(JSON.stringify({ url: topic, status: 200, value: params }))
       }
       response.send('ok', 200)
-    } else if (params.value !== undefined)
+    } else if (params.value !== undefined) {
       // should only be send raw to stars
       // for (const connection of connections) {
       // if (connection !== response.connection) connection.send(JSON.stringify({
@@ -53,7 +51,8 @@ const defaultRoutes = {
       // }));
       // }
       globalThis.pubsub.publishVerbose(topic, params.value)
-    response.send('ok', 200)
+      response.send('ok', 200)
+    }
   },
   peernet: (
     params: { join: any; peerId: any; address: any },
