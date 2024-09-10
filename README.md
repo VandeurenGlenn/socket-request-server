@@ -15,7 +15,7 @@ npm i --save socket-request-server
 ```js
 import server from 'socket-request-server'
 server(
-  { port: 6000 },
+  { port: 6000, keepValue: false },
   {
     date: ({ send }) => response.send(new Date())
   }

@@ -17,7 +17,7 @@ const socketRequestServer = async (options, routes = {}) => {
   // if (!routes && !routes.port && options) routes = options;
   // else if (!options && !routes) return console.error('no routes defined');
 
-  let { httpServer, httpsServer, port, protocol, credentials, origin, pubsub } = options
+  let { httpServer, httpsServer, port, protocol, credentials, origin, pubsub, keepValue } = options
   if (!pubsub) pubsub = new PubSub(false)
   if (!port) port = 6000
   const connections: SocketRequestConnection[] = []
@@ -50,7 +50,7 @@ const socketRequestServer = async (options, routes = {}) => {
       const topics = Object.keys(connection.subscriptions)
       if (topics.length)
         for (const topic of topics) {
-          globalThis.pubsub.unsubscribe(topic, connection.subscriptions[topic])
+          globalThis.pubsub.unsubscribe(topic, connection.subscriptions[topic], { keepValue })
           delete connection.subscriptions[topic]
         }
     })
