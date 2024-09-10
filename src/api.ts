@@ -1,12 +1,6 @@
-import { SocketRequestConnection } from './connection.js'
-import socketResponse from './response.js'
+import socketResponse, { SocketResponse } from './response.js'
 const startTime = new Date().getTime()
 globalThis.peerMap = new Map()
-
-export type SocketResponse = {
-  connection: SocketRequestConnection
-  send: (arg0: string, arg1: number) => void
-}
 
 const defaultRoutes = {
   ping: (response: { send: (arg0: number) => any }) => response.send(new Date().getTime()),
