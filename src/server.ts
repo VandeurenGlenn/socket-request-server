@@ -46,6 +46,15 @@ const socketRequestServer = async (options, routes = {}) => {
   socketServer.on('request', (request) => {
     connection = socketConnection(request, protocol, origin)
     connections.push(connection)
+    connection.on('close', () => {
+      const topics = Object.keys(connection.subscriptions)
+      if (topics.length)
+        for (const topic of topics) {
+          globalThis.pubsub.unsubscribe(topic, connection.subscriptions[topic])
+          delete connection.subscriptions[topic]
+        }
+    })
+    connections.splice(connections.indexOf(connection), 1)
 
     const routeHandler = (message) => {
       let data

@@ -3,6 +3,7 @@ import { connection, request, server as WebSocketServer } from 'websocket'
 
 export interface SocketRequestConnection extends connection {
   publish: (topic: string, value: any) => void
+  subscriptions: { [topic: string]: (value: any) => void }
 }
 
 const originIsAllowed = (requestOrigin, origin) => {
@@ -23,6 +24,8 @@ export default (request: request, protocol, origin): SocketRequestConnection => 
   fullLog(`Connection accepted @${protocol}`)
 
   const socketRequestConnection = connection as SocketRequestConnection
+
+  socketRequestConnection.subscriptions = {}
 
   socketRequestConnection.publish = (topic, value) => {
     connection.send(JSON.stringify({ url: topic, status: 200, value }))

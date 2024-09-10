@@ -1,9 +1,10 @@
+import { SocketRequestConnection } from './connection.js'
 import socketResponse from './response.js'
 const startTime = new Date().getTime()
 globalThis.peerMap = new Map()
 
 export type SocketResponse = {
-  connection: { send: (arg0: string) => void }
+  connection: SocketRequestConnection
   send: (arg0: string, arg1: number) => void
 }
 
@@ -30,14 +31,15 @@ const defaultRoutes = {
     }
 
     if (params.subscribe) {
-      globalThis.pubsub.subscribe(topic, (message: any) => {
+      response.connection.subscriptions[topic] = (message: any) => {
         send(message)
-      })
+      }
+      globalThis.pubsub.subscribe(topic, response.connection.subscriptions[topic])
       response.send('ok', 200)
     } else if (params.unsubscribe) {
-      globalThis.pubsub.unsubscribe(topic, (message: any) => {
-        send(message)
-      })
+      globalThis.pubsub.unsubscribe(topic, response.connection.subscriptions[topic])
+      delete response.connection.subscriptions[topic]
+
       for (const connection of connections) {
         if (connection !== response.connection)
           connection.send(JSON.stringify({ url: topic, status: 200, value: params }))
