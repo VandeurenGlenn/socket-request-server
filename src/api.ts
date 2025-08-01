@@ -51,7 +51,7 @@ const defaultRoutes = {
     }
   },
   peernet: (
-    params: { join: any; peerId: any; address: any },
+    params: { join: boolean; peerId: any; address: any; peers?: any },
     response: { send: (arg0: any[]) => void; connection: any },
     connections: any
   ) => {
@@ -66,6 +66,15 @@ const defaultRoutes = {
       }
       return
     }
+    if (params.peerId && !params.peers && params.join === undefined) {
+      response.send(globalThis.peerMap.get(params.peerId) || null)
+      return
+    }
+    if (params.peers) {
+      response.send([...globalThis.peerMap.values()])
+      return
+    }
+
     if (!params.join) {
       globalThis.peerMap.delete(params.peerId)
       return
