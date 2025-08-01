@@ -40,13 +40,13 @@
   },
   "homepage": "https://github.com/vandeurenglenn/socket-request-server#readme",
   "dependencies": {
-    "@vandeurenglenn/little-pubsub": "^1.5.0",
+    "@vandeurenglenn/little-pubsub": "^1.5.1",
     "websocket": "^1.0.35"
   },
   "devDependencies": {
-    "@rollup/plugin-typescript": "^11.1.6",
+    "@rollup/plugin-typescript": "^12.1.4",
     "@types/websocket": "^1.0.10",
-    "rollup": "^4.21.2",
-    "tslib": "^2.7.0"
+    "rollup": "^4.46.2",
+    "tslib": "^2.8.1"
   }
 }
