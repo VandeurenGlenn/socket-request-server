@@ -75,7 +75,7 @@ const defaultRoutes = {
       return
     }
 
-    if (!params.join) {
+    if (!params.join && !params.peers && params.peerId) {
       globalThis.peerMap.delete(params.peerId)
       return
     }
