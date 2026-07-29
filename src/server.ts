@@ -21,7 +21,6 @@ const socketRequestServer = async (options, routes = {}) => {
   if (!pubsub) pubsub = new PubSub(false)
   if (!port) port = 6000
   const connections: SocketRequestConnection[] = []
-  let connection: SocketRequestConnection
 
   routes = api(routes)
 
@@ -44,7 +43,7 @@ const socketRequestServer = async (options, routes = {}) => {
   })
 
   socketServer.on('request', (request) => {
-    connection = socketConnection(request, protocol, origin)
+    const connection = socketConnection(request, protocol, origin)
     connections.push(connection)
     connection.on('close', () => {
       const topics = Object.keys(connection.subscriptions)
@@ -53,8 +52,9 @@ const socketRequestServer = async (options, routes = {}) => {
           globalThis.pubsub.unsubscribe(topic, connection.subscriptions[topic], { keepValue })
           delete connection.subscriptions[topic]
         }
+      const index = connections.indexOf(connection)
+      if (index !== -1) connections.splice(index, 1)
     })
-    connections.splice(connections.indexOf(connection), 1)
 
     const routeHandler = (message) => {
       let data
@@ -74,7 +74,7 @@ const socketRequestServer = async (options, routes = {}) => {
       if (routes[url]) {
         if (!params) return routes[url](socketResponse(connection, url, id), connections)
         return routes[url](params, socketResponse(connection, url, id), connections)
-      } else return socketResponse(connection, url, id).error(`no handler found for '${message.url}'`)
+      } else return socketResponse(connection, url, id).error(`no handler found for '${url}'`)
     }
     connection.on('message', routeHandler)
   })
