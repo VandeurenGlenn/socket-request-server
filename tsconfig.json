@@ -3,6 +3,7 @@
     "target": "ESNext",
     "module": "NodeNext",
     "outDir": "./exports",
+    "rootDir": "src",
     "moduleResolution":"NodeNext",
     "allowJs": true,
     "declarationDir": "./exports/types",
