@@ -1,6 +1,6 @@
 {
   "name": "socket-request-server",
-  "version": "1.7.2",
+  "version": "1.7.3",
   "description": "Simple WebSocket request/response server",
   "type": "module",
   "exports": {
@@ -18,7 +18,7 @@
     }
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "node --test test.js",
     "build": "rollup -c"
   },
   "files": [
